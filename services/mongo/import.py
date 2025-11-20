@@ -2,10 +2,10 @@ from pymongo import MongoClient
 from dotenv import dotenv_values
 import csv
 import requests
-# import zipfile
 import gzip
 import shutil
 from tqdm import tqdm
+
 
 ### Environment and Global Variables ###
 
@@ -17,11 +17,13 @@ col_name = config["COL_NAME"]
 api_url = config["API_URL"]
 
 path = "../../stream/data/protein_penguin.tsv"
+path_root = "stream/data/protein_penguin.tsv"
 
 client = MongoClient(uri)
 
 db = client[db_name]
 collection = db[col_name]
+
 
 ### Functions ###
 
@@ -32,9 +34,7 @@ def download_url(url, save_path, chunk_size=128):
             fd.write(chunk)
 
 
-### Main Execution ###
-
-if  __name__ == "__main__":
+def import_main(path=path):
     
     try:
         collection.drop()
@@ -53,7 +53,16 @@ if  __name__ == "__main__":
         collection.insert_many(raw_penguin_protein)
             
         print("Import completed successfully.")
+        
+        return True
             
     except Exception as e:
         print(f"An error occurred: {e}")
+        
+        return False
+    
 
+### Main Execution ###
+
+if  __name__ == "__main__":
+    import_main()
