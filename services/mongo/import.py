@@ -21,11 +21,6 @@ path0 = "penguin_protein"
 path = "data/penguin_protein/penguin_protein.tsv"
 path_root = "stream/data/penguin_protein/penguin_protein.tsv"
 
-client = MongoClient(uri)
-
-db = client[db_name]
-collection = db[col_name]
-
 
 ### Functions ###
 
@@ -40,27 +35,37 @@ def download_url(url, save_path):
                 progress_bar.update(len(chunk))
 
 
-def import_main(path=path):
+def import_main(api_url=api_url, path=path0, uri=uri, db_name=db_name, col_name=col_name):
     
     try:
+        
+        ### Setup MongoDB connection ###
+        client = MongoClient(uri)
+        db = client[db_name]
+        collection = db[col_name]
+        
+        ### Setup paths and folders ###
         folder_path = f"data/{path}/"
         tsv_gz_path = f"data/{path}/{path}.tsv.gz"
         tsv_path = f"data/{path}/{path}.tsv"
         
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-            
+        
+        ### Remove current collection ###    
         collection.drop()
         print("Existing collection dropped. Starting download...")
         
+        ### Download, extract and unzip data ###
         download_url(api_url, tsv_gz_path)
         with gzip.open(tsv_gz_path, 'rb') as f_in:
             with open(tsv_path, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
         print(f"Correctly downloaded and extracted the file at {tsv_path}. Now importing to MongoDB...")
         
-        raw_penguin_protein = csv.DictReader(open(tsv_path), delimiter="\t")
-        collection.insert_many(raw_penguin_protein)
+        ### Import data into MongoDB ###
+        raw_protein = csv.DictReader(open(tsv_path), delimiter="\t")
+        collection.insert_many(raw_protein)
         print("Import completed successfully.")
         
         return True
@@ -74,4 +79,4 @@ def import_main(path=path):
 ### Main Execution ###
 
 if  __name__ == "__main__":
-    import_main(path0)
+    import_main()
