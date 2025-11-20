@@ -50,8 +50,7 @@ if  __name__ == "__main__":
         
         raw_penguin_protein = csv.DictReader(open(path), delimiter="\t")
         
-        for row in tqdm(raw_penguin_protein):
-            collection.insert_one(row)
+        collection.insert_many(raw_penguin_protein)
             
         print("Import completed successfully.")
             
