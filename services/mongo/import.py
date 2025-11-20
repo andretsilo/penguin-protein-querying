@@ -35,8 +35,27 @@ def download_url(url, save_path):
                 progress_bar.update(len(chunk))
 
 
+
+def import_tsv(api_url, folder_path, tsv_path, tsv_gz_path):
+        
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    
+    ### Download, extract and unzip data ###
+    download_url(api_url, tsv_gz_path)
+    with gzip.open(tsv_gz_path, 'rb') as f_in:
+        with open(tsv_path, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    pass
+    
+
 def import_main(api_url=api_url, path=path0, uri=uri, db_name=db_name, col_name=col_name):
     
+    ### Setup paths and folders ###
+    folder_path = f"data/{path}/"
+    tsv_gz_path = f"data/{path}/{path}.tsv.gz"
+    tsv_path = f"data/{path}/{path}.tsv"
+
     try:
         
         ### Setup MongoDB connection ###
@@ -44,23 +63,12 @@ def import_main(api_url=api_url, path=path0, uri=uri, db_name=db_name, col_name=
         db = client[db_name]
         collection = db[col_name]
         
-        ### Setup paths and folders ###
-        folder_path = f"data/{path}/"
-        tsv_gz_path = f"data/{path}/{path}.tsv.gz"
-        tsv_path = f"data/{path}/{path}.tsv"
-        
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-        
         ### Remove current collection ###    
         collection.drop()
         print("Existing collection dropped. Starting download...")
         
         ### Download, extract and unzip data ###
-        download_url(api_url, tsv_gz_path)
-        with gzip.open(tsv_gz_path, 'rb') as f_in:
-            with open(tsv_path, 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
+        import_tsv(api_url, folder_path, tsv_path, tsv_gz_path)
         print(f"Correctly downloaded and extracted the file at {tsv_path}. Now importing to MongoDB...")
         
         ### Import data into MongoDB ###
