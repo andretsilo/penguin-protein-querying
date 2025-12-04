@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from dotenv import dotenv_values
-from filters import filter as filter_router
+from routes.routes import router
+#from filters.filter import Filter
 from contextlib import asynccontextmanager
 from neo4j import GraphDatabase
 
@@ -17,4 +18,5 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(filter_router) #, tags=["books"], prefix="/book")
+app.include_rounter(router)
+#app.include_router(Filter) #, tags=["books"], prefix="/book")
