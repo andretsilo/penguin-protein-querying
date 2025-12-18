@@ -1,0 +1,6 @@
+grpcio
+protobuf
+requests
+fastapi
+uvicorn
+pydantic

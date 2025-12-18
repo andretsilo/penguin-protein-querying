@@ -1,0 +1,71 @@
+syntax = "proto3";
+package grpc;
+
+service Pass {
+  rpc AddProteinBatch (ProteinBatch) returns (Ack) {}
+  rpc CalculateBestMatches (Empty) returns (stream MatchResult) {}
+  rpc CalculateAllPairs (Empty) returns (stream MatchResult) {}
+  rpc DeleteProteins (EntryList) returns (Ack) {}
+  rpc RecalculateBestMatches (Empty) returns (Ack) {}
+
+  rpc SaveState (SaveStateRequest) returns (Ack) {}
+  rpc RollbackToState (RollbackRequest) returns (Ack) {}
+  rpc GetSavedStates (Empty) returns (StateList) {}
+  rpc RemoveSavedState (StateName) returns (Ack) {}
+}
+
+message Empty {}
+
+message Ack {
+  bool success = 1;
+  string message = 2;
+}
+
+message ProteinBatch {
+  repeated Protein proteins = 1;
+}
+
+message JaccardTuple {
+  string entry = 1;
+  float jaccard = 2;
+}
+
+message MatchResult {
+  Protein query_protein = 1;
+  repeated JaccardTuple correlations = 2;
+}
+
+message EntryList {
+  repeated string entries = 1;
+}
+
+message SaveStateRequest {
+  string state_name = 1;
+  bool overwrite = 2;
+}
+
+message RollbackRequest {
+  string state_name = 1;
+  bool confirm = 2;
+}
+
+message StateList {
+  repeated string names = 1;
+}
+
+message StateName {
+  string name = 1;
+}
+
+message Protein {
+  string id = 1;
+  string entry = 2;
+  string reviewed = 3;
+  string entry_name = 4;
+  string protein_names = 5;
+  string gene_names = 6;
+  string organism = 7;
+  string interpro = 8;
+  string ec_number = 9;
+  string sequence = 10;
+}
