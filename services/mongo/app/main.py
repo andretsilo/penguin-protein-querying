@@ -7,10 +7,17 @@ from dotenv import dotenv_values
 from app.config.logger import logger
 from app.db.loader import import_tsv
 from app.db.repository import ProteinRepository
+from app.db.statistics import StatisticsRepository
 from starlette.responses import JSONResponse
+from pymongo.errors import PyMongoError
 
 config = dotenv_values(".env")
+mongodb_client = MongoClient(config["ATLAS_URI"])
+database = mongodb_client[config["DB_NAME"]]
+collection = database[config["COL_NAME"]]
+
 repository = ProteinRepository()
+statistics_mongo = StatisticsRepository(collection)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,16 +40,23 @@ async def lifespan(app: FastAPI):
         )
         proteins.append(protein)
 
-    # Start the mongoDB client
-    mongodb_client = MongoClient(config["ATLAS_URI"])
-    database = mongodb_client[config["DB_NAME"]]
-    collection = database[config["COL_NAME"]]
-
     # For MongoDB, the results must be in a model_dump (dict deprecated). insert_many is much faster than insert_one.
     collection.insert_many([p.model_dump() for p in proteins])
     yield
 
 app = FastAPI(lifespan = lifespan)
+
+@app.get("/health")
+async def health_check():
+    status = {"api": "healthy", "mongodb": "unknown"} # Default status
+    try:
+        client = MongoClient(config["ATLAS_URI"],
+                             serverSelectionTimeoutMS=2000)    # Wait for 2s
+        client.admin.command("ping")
+        status["mongodb"] = "healthy"
+    except PyMongoError:
+        status["mongodb"] = "unreachable"
+    return status
 
 @app.get("/protein/")
 async def getProtein(filter: Filter):
@@ -55,3 +69,19 @@ async def insertProtein(protein: Protein):
         return {"message": "Data inserted correctly"}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Something went fucking wrong.")
+
+@app.get("/stats-annotation-coverage")
+async def annotation_coverage():
+    return statistics_mongo.annotation_coverage()
+
+@app.get("/stats-interpro-group-size")
+async def interpro_group_size():
+    return statistics_mongo.interpro_group_size()
+
+@app.get("/stats-ec-group-size")
+async def ec_group_size():
+    return statistics_mongo.ec_group_size()
+
+@app.get("/stats-ec-group-size")
+async def sequence_length():
+    return statistics_mongo.sequence_length()
