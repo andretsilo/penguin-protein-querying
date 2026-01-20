@@ -7,4 +7,5 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import com.ubuntu.neo4j.business.entity.Protein;
 
 public interface ProteinRepository extends Neo4jRepository<Protein, Long> {
+    Protein findByEntry(String entry);
 }

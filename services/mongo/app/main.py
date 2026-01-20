@@ -3,7 +3,8 @@ from contextlib import asynccontextmanager
 from app.filters.filter import Filter
 from pymongo import MongoClient
 from app.model.protein import Protein
-from dotenv import dotenv_values
+from dotenv import load_dotenv
+import os
 from app.config.logger import logger
 from app.db.loader import import_tsv
 from app.db.repository import ProteinRepository
@@ -11,10 +12,10 @@ from app.db.statistics import StatisticsRepository
 from starlette.responses import JSONResponse
 from pymongo.errors import PyMongoError
 
-config = dotenv_values(".env")
-mongodb_client = MongoClient(config["ATLAS_URI"])
-database = mongodb_client[config["DB_NAME"]]
-collection = database[config["COL_NAME"]]
+load_dotenv()
+mongodb_client = MongoClient(os.getenv("ATLAS_URI"))
+database = mongodb_client[os.getenv("DB_NAME")]
+collection = database[os.getenv("COL_NAME")]
 
 repository = ProteinRepository()
 statistics_mongo = StatisticsRepository(collection)
@@ -50,7 +51,7 @@ app = FastAPI(lifespan = lifespan)
 async def health_check():
     status = {"api": "healthy", "mongodb": "unknown"} # Default status
     try:
-        client = MongoClient(config["ATLAS_URI"],
+        client = MongoClient(os.getenv("ATLAS_URI"),
                              serverSelectionTimeoutMS=2000)    # Wait for 2s
         client.admin.command("ping")
         status["mongodb"] = "healthy"

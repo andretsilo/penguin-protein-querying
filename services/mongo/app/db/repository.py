@@ -1,14 +1,15 @@
 from pymongo import MongoClient
-from dotenv import dotenv_values
+from dotenv import load_dotenv
+import os
 from app.filters.filter import Filter
 from app.model.protein import Protein
 from app.config.logger import logger
 
-config = dotenv_values(".env")
+load_dotenv()
 
-uri = config["ATLAS_URI"]
-db_name = config["DB_NAME"]
-col_name = config["COL_NAME"]
+uri = os.getenv("ATLAS_URI")
+db_name = os.getenv("DB_NAME")
+col_name = os.getenv("COL_NAME")
 
 class ProteinRepository():
     def __init__(self, uri=uri, db_name=db_name, col_name=col_name):

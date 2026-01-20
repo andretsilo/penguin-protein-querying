@@ -2,7 +2,9 @@ package com.ubuntu.neo4j.business.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ubuntu.neo4j.server.dto.ProteinDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +45,10 @@ public class CorrelatorService {
                 });
         repository.save(mainProtein);
         log.info("Persited relationships");
+    }
+
+    public List<ProteinDto> getCorrelations(String entry) {
+        Protein mainProtein = repository.findByEntry(entry);
+        return proteinMapper.toDto(mainProtein.correlatedProteins.stream().toList());
     }
 }

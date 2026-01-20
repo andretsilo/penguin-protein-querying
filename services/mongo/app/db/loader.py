@@ -1,4 +1,4 @@
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 import csv
 import requests
 import gzip
@@ -7,8 +7,8 @@ import shutil
 from tqdm import tqdm
 from app.config.logger import logger
 
-config = dotenv_values(".env")
-api_url = config["API_URL"]
+load_dotenv()
+api_url = os.getenv("API_URL")
 
 path = "data/protein_penguin.tsv"
 
