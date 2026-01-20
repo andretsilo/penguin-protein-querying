@@ -1,0 +1,201 @@
+{
+  "info": {
+    "_postman_id": "bbb1bb1a-b84f-4435-ad29-4dc23b7e848a",
+    "name": "Protein Data Injection API",
+    "description": "Collection for testing the Protein Data Injection API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50909762",
+    "_collection_link": "https://go.postman.co/collection/50909762-bbb1bb1a-b84f-4435-ad29-4dc23b7e848a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Check the health status of both FastAPI and gRPC servers"
+      },
+      "response": [
+        {
+          "name": "Healthy Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"status\": \"healthy\",\n  \"grpc_server\": \"running\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get API Information",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        },
+        "description": "Get comprehensive API information including endpoints, workflow, and examples"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Help Documentation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/help",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "help"
+          ]
+        },
+        "description": "Get detailed usage instructions, examples, and API documentation"
+      },
+      "response": []
+    },
+    {
+      "name": "View Current State (Print)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/print",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "print"
+          ]
+        },
+        "description": "Execute print.py to view current state of all proteins and their Jaccard correlations"
+      },
+      "response": [
+        {
+          "name": "Success Response",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/print",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "print"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"status\": \"success\",\n  \"output\": \"--- View Current State ---\\nRequesting list...\\n[1] A0A087QH05\\n    Correlations: 3 pairs (excluding self)\\n      - A0A087QKA0: 0.7000\\n      - A0A087QKA1: 0.5000\\n      - A0A087QKA2: 0.8000\\n...\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Inject Proteins - Exact Jaccard Scores (0.7, 0.5, 0.8)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"Entry\": \"A0A087QH05\",\n    \"InterPro\": \"IPR001;IPR002;IPR003;IPR004;IPR005;IPR006;IPR007;IPR008;IPR009;IPR010;\",\n    \"Sequence\": \"MKVLWAAA\"\n  },\n  {\n    \"Entry\": \"A0A087QKA0\",\n    \"InterPro\": \"IPR001;IPR002;IPR003;IPR004;IPR005;IPR006;IPR007;\",\n    \"Sequence\": \"MKVLWAAA\"\n  },\n  {\n    \"Entry\": \"A0A087QKA1\",\n    \"InterPro\": \"IPR001;IPR002;IPR003;IPR004;IPR005;\",\n    \"Sequence\": \"MKVLWAAA\"\n  },\n  {\n    \"Entry\": \"A0A087QKA2\",\n    \"InterPro\": \"IPR001;IPR002;IPR003;IPR004;IPR005;IPR006;IPR007;IPR008;\",\n    \"Sequence\": \"MKVLWAAA\"\n  }\n]"
+        },
+        "url": {
+          "raw": "{{base_url}}/inject",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "inject"
+          ]
+        },
+        "description": "Inject proteins with specific InterPro domains to achieve exact Jaccard scores:\n- A0A087QH05 vs A0A087QKA0 = 0.7 (7/10)\n- A0A087QH05 vs A0A087QKA1 = 0.5 (5/10)\n- A0A087QH05 vs A0A087QKA2 = 0.8 (8/10)"
+      },
+      "response": []
+    },
+    {
+      "name": "Inject Single Protein",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"Entry\": \"SINGLE_PROT\",\n    \"InterPro\": \"IPR001;IPR002;\",\n    \"Sequence\": \"MKVLWAALLVT\"\n  }\n]"
+        },
+        "url": {
+          "raw": "{{base_url}}/inject",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "inject"
+          ]
+        },
+        "description": "Inject a single protein for testing"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:50052",
+      "type": "string"
+    }
+  ]
+}
