@@ -61,7 +61,10 @@ async def health_check():
 
 @app.get("/protein/")
 async def getProtein(filter: Filter):
-    return JSONResponse(content=str(list(repository.get(filter))))
+    proteins = list(repository.get(filter))
+    for protein in proteins:
+        protein["_id"] = str(protein["_id"])
+    return proteins
 
 @app.post("/protein/")
 async def insertProtein(protein: Protein):

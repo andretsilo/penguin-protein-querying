@@ -24,7 +24,7 @@ class ProteinRepository():
         self.collection.insert_many(data)
     
     def get(self, filter: Filter):
-        return self.collection.find({"entry": filter.identifier})
+        return self.collection.find({"entry": {"$regex": filter.identifier, "$options": "i"}})
     
     def insert_one(self, protein: Protein):
         logger.info(f"Inserting entity: {protein}")
