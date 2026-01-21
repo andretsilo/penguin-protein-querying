@@ -1,28 +1,11 @@
 [
   {
-    "Entry": "P69905",
-    "JaccardCorrelations": [
-      { "Entry": "P02185", "Jaccard": 0.75 },
-      { "Entry": "P02144", "Jaccard": 0.82 }
-    ]
+    "entry": "A0A087QKA0"
   },
   {
-    "Entry": "P02185",
-    "JaccardCorrelations": [
-      { "Entry": "P69905", "Jaccard": 0.75 },
-      { "Entry": "P02144", "Jaccard": 0.68 }
-    ]
+    "entry": "A0A087QKA1"
   },
   {
-    "Entry": "P02144",
-    "JaccardCorrelations": [
-      { "Entry": "P69905", "Jaccard": 0.82 },
-      { "Entry": "P02185", "Jaccard": 0.68 },
-      { "Entry": "P00167", "Jaccard": 0.45 }
-    ]
-  },
-  {
-    "Entry": "A0A087QKA0",
-    "JaccardCorrelations": []
+    "entry": "A0A087QKA2"
   }
 ]

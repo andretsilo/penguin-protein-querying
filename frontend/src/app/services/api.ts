@@ -11,10 +11,10 @@ export async function fetchAllProteins(): Promise<Protein[]> {
   }
 
   try {
-    const response = await fetch(`${API_URL}/protein/`);
+    const params = new URLSearchParams({ identifier: "A0A087QH", name: "", description: "" });
+    const response = await fetch(`${API_URL}/protein?${params}`);
     if (!response.ok) throw new Error("Failed to fetch proteins");
-    const data = await response.json();
-    return data;
+    return response.json();
   } catch (error) {
     console.error("Error fetching proteins:", error);
     return [];
@@ -28,7 +28,8 @@ export async function fetchProteinByEntry(entry: string): Promise<Protein | null
   }
 
   try {
-    const response = await fetch(`${API_URL}/protein/?identifier=${entry}`);
+    const params = new URLSearchParams({ identifier: entry, name: "", description: "" });
+    const response = await fetch(`${API_URL}/protein?${params}`);
     if (!response.ok) throw new Error("Failed to fetch protein");
     const data = await response.json();
     return data[0] || null;
@@ -39,23 +40,36 @@ export async function fetchProteinByEntry(entry: string): Promise<Protein | null
 }
 
 export interface ProteinCorrelation {
-  Entry: string;
-  JaccardCorrelations: Array<{
-    Entry: string;
-    Jaccard: number;
+  entry: string;
+  jaccardCorrelations: Array<{
+    entry: string;
+    jaccard: number;
   }>;
 }
 
-export async function fetchProteinCorrelations(entry?: string): Promise<ProteinCorrelation[]> {
+export async function saveProteinCorrelations(correlations: ProteinCorrelation[]) {
+  if (config.USE_MOCK_DATA) {
+    return { status: "success" };
+  }
+
+  const response = await fetch(`${NEO4J_URL}/api/proteins`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(correlations)
+  });
+  if (!response.ok) throw new Error("Failed to save correlations");
+  return { status: "success" };
+}
+
+export async function fetchProteinCorrelations(entry: string): Promise<Array<{ entry: string }>> {
   if (config.USE_MOCK_DATA) {
     const response = await fetch('/mock-correlations.json');
-    const data = await response.json();
-    return entry ? data.filter((p: ProteinCorrelation) => p.Entry === entry) : data;
+    return response.json();
   }
 
   try {
-    const url = entry ? `${NEO4J_URL}/api/protein?entry=${entry}` : `${NEO4J_URL}/api/protein`;
-    const response = await fetch(url);
+    const params = new URLSearchParams({ entry });
+    const response = await fetch(`${NEO4J_URL}/api/proteins?${params}`);
     if (!response.ok) throw new Error("Failed to fetch correlations");
     return response.json();
   } catch (error) {

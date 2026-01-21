@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.filters.filter import Filter
 from pymongo import MongoClient
@@ -47,6 +48,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan = lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/health")
 async def health_check():
     status = {"api": "healthy", "mongodb": "unknown"} # Default status
@@ -59,8 +68,9 @@ async def health_check():
         status["mongodb"] = "unreachable"
     return status
 
-@app.get("/protein/")
-async def getProtein(filter: Filter):
+@app.get("/protein")
+async def getProtein(identifier: str = "", name: str = "", description: str = ""):
+    filter = Filter(identifier=identifier, name=name, description=description)
     proteins = list(repository.get(filter))
     for protein in proteins:
         protein["_id"] = str(protein["_id"])

@@ -1,0 +1,158 @@
+{
+  "info": {
+    "_postman_id": "e4197d90-08c1-4dbb-b48c-acdf4e1172db",
+    "name": "penguins-protein",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47386927"
+  },
+  "item": [
+    {
+      "name": "getProteinFilter",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"identifier\": \"A0A087QH\",\n    \"name\": \"\",\n    \"description\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/protein",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "protein"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "addProtein",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entry\": \"ANDREATSILOGIANNIS\",\n  \"reviewed\": \"unreviewed\",\n  \"entry_name\": \"A0A087QKA0_APTFO\",\n  \"protein_name\": \"Solute carrier family 15 member 1 (Intestinal H(+)/peptide cotransporter) (Oligopeptide transporter, small intestine isoform) (Peptide transporter 1)\",\n  \"gene_name\": \"AS27_01234\",\n  \"organism\": \"Aptenodytes forsteri (Emperor penguin)\",\n  \"interpro\": \"IPR036259;IPR004768;IPR000109;IPR018456;\",\n  \"ec_number\": \"\",\n  \"sequence\": \"PSCFGYPLSIFFIIINEFCERFSYYGMRAVLILYFKYFLQWDDNLSTAIYHTFVALCYLTPILGALIADSWLGKFKTIFTLSIVYTIGQAVMSVSSINDLTDHNWDGSPDNVSVHVALSMTGLILIALGTGGIKPCVSAFGGDQFEDDQEKQRTRFFSIFYLSINAGSLLSTIITPILRAQECGIHSKQRCYPLAFGVPAALMAVALVVFIIGSRMYKKVQPQGNIMTQVSKCIGFAIKNRFRHRSKEFPKREHWLDWASEKYDKRLIAQTKMVLKVLFLYIPLPMFWALFDQQGSRWTLQATTMDGNFVAIQIQPDQMQTVNPILIILMVPVVDALVYPLIKKCKINFTPLRKITVGMFLASLAFVAAALVQVQIDKTLPVFPAAGQSQIKVINLGTDNATVWFEPQIQSVNVTSMESTAYMTFETSQLLSLKVTSGNKITSQLIKLSEGNRYTLGVKNNATDIVAELLFDNVTSKPEEGNNLIRFINNLPDTINITMGDTSFGTLASLSASNYNLFPGGREDKITAIINSMPCSVTSKALGFGSAYTIVINKCSGAILDVTYSEDIPPNTVHMAWQIPQYFILTCAEVVFSVTGLEFSYSQAPSNMKAVLQAGWLLTVAVGNIIVLIVAGASKLSEQWAEYVLFAALLLAVCIIFAIMAYFYTYIDPNEIEAQLDEEEKQVKKDQDVYEKQAEADSQM\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/protein",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "protein"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "addProteinCouples",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\r\n{\r\n    \"entry\": \"A0A087QH05\",\r\n    \"jaccardCorrelations\": [\r\n        {\r\n            \"entry\": \"A0A087QKA0\",\r\n            \"jaccard\": 0.7\r\n        },\r\n        {\r\n            \"entry\": \"A0A087QKA1\",\r\n            \"jaccard\": 0.5\r\n        },\r\n        {\r\n            \"entry\": \"A0A087QKA2\",\r\n            \"jaccard\": 0.8\r\n        }\r\n    ]\r\n}\r\n]\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/proteins",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "proteins"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "stats",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/health",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getCorrelations",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"entry\":\"A0A087QH05\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/proteins",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "proteins"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

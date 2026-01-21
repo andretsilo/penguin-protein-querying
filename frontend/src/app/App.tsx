@@ -2,15 +2,16 @@ import { useState, useMemo, useEffect } from "react";
 import { ProteinList } from "@/app/components/ProteinList";
 import { ProteinDetail } from "@/app/components/ProteinDetail";
 import { ProteinGraph } from "@/app/components/ProteinGraph";
-import { Protein, getSimilarProteins } from "@/app/data/proteins";
+import { Protein } from "@/app/data/proteins";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
-import { fetchAllProteins } from "@/app/services/api";
+import { fetchAllProteins, fetchProteinByEntry, fetchProteinCorrelations } from "@/app/services/api";
 
 export default function App() {
   const [selectedProtein, setSelectedProtein] = useState<Protein | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [proteins, setProteins] = useState<Protein[]>([]);
   const [loading, setLoading] = useState(true);
+  const [relatedProteins, setRelatedProteins] = useState<Protein[]>([]);
 
   useEffect(() => {
     fetchAllProteins()
@@ -21,17 +22,34 @@ export default function App() {
       .catch(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (!searchQuery.trim()) return;
+    fetchProteinByEntry(searchQuery)
+      .then(protein => {
+        if (protein) setProteins([protein]);
+      });
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (!selectedProtein) {
+      setRelatedProteins([]);
+      return;
+    }
+    fetchProteinCorrelations(selectedProtein.entry)
+      .then(async (correlations) => {
+        const related = await Promise.all(
+          correlations.map(c => fetchProteinByEntry(c.entry))
+        );
+        setRelatedProteins(related.filter(p => p !== null) as Protein[]);
+      });
+  }, [selectedProtein]);
+
   const filteredProteins = useMemo(() => {
     if (!searchQuery.trim()) return proteins;
     return proteins.filter(protein => 
       protein.entry.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, proteins]);
-
-  // Get similar proteins based on the selected protein
-  const relatedProteins = selectedProtein
-    ? getSimilarProteins(selectedProtein.entry)
-    : [];
 
   return (
     <div className="size-full bg-gray-50">

@@ -1,0 +1,12 @@
+{
+  "name": "Protein Data Injection API",
+  "version": "1.0.0",
+  "description": "API for injecting protein data and computing Jaccard similarities",
+  "endpoints": [
+    "/health",
+    "/",
+    "/help",
+    "/print",
+    "/inject"
+  ]
+}

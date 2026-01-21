@@ -1,0 +1,4 @@
+{
+  "status": "success",
+  "output": "--- View Current State ---\nRequesting list...\n[1] A0A087QH05\n    Correlations: 3 pairs (excluding self)\n      - A0A087QKA0: 0.7000\n      - A0A087QKA1: 0.5000\n      - A0A087QKA2: 0.8000\n[2] A0A087QKA0\n    Correlations: 1 pair (excluding self)\n      - A0A087QH05: 0.7000"
+}

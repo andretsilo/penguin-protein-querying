@@ -1,0 +1,9 @@
+{
+  "help": "Protein Data Injection API",
+  "usage": "Use POST /inject to inject proteins with InterPro domains",
+  "example": {
+    "Entry": "A0A087QH05",
+    "InterPro": "IPR001;IPR002;IPR003;",
+    "Sequence": "MKVLWAAA"
+  }
+}
