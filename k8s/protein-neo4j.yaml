@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: neo4j-app-config
+  namespace: penguin-protein
+data:
+  application.properties: |
+    spring.application.name=protein-neo4j
+    spring.neo4j.uri=neo4j://neo4j:7687
+    spring.neo4j.authentication.username=${NEO4J_USERNAME}
+    spring.neo4j.authentication.password=${NEO4J_PASSWORD}
+    protein.jaccard.threshold=0.4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: protein-neo4j
+  namespace: penguin-protein
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: protein-neo4j
+  template:
+    metadata:
+      labels:
+        app: protein-neo4j
+    spec:
+      containers:
+      - name: protein-neo4j
+        image: your-registry/protein-neo4j:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: NEO4J_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: neo4j-secret
+              key: NEO4J_USERNAME
+        - name: NEO4J_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: neo4j-secret
+              key: NEO4J_PASSWORD
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: config
+        configMap:
+          name: neo4j-app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: protein-neo4j
+  namespace: penguin-protein
+spec:
+  type: LoadBalancer
+  selector:
+    app: protein-neo4j
+  ports:
+  - port: 8080
+    targetPort: 8080

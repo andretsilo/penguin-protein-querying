@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaccard-service
+  namespace: penguin-protein
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaccard-service
+  template:
+    metadata:
+      labels:
+        app: jaccard-service
+    spec:
+      containers:
+      - name: jaccard-service
+        image: your-registry/jaccard-service:latest
+        ports:
+        - containerPort: 50051
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaccard-service
+  namespace: penguin-protein
+spec:
+  selector:
+    app: jaccard-service
+  ports:
+  - port: 50051
+    targetPort: 50051
+    protocol: TCP
