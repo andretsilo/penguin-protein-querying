@@ -1,0 +1,16 @@
+services:
+  java-app:
+    build:
+      context: ./neo4j/protein-neo4j
+      dockerfile: Dockerfile
+    container_name: protein-neo4j
+    network_mode: host
+    restart: unless-stopped
+
+  python-api:
+    build:
+      context: ./mongo
+      dockerfile: Dockerfile
+    container_name: mongo-api
+    network_mode: host
+    restart: unless-stopped
